@@ -1,6 +1,7 @@
 package com.sid.TaskManagement.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,6 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public Task createTask(Task task) {
-        return taskRepository.save(task);
-      }
 
     public List<Task> findAll(){
         return taskRepository.findAll();
@@ -26,15 +24,30 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    /* @Transactional(readOnly =  true)
-    public List<Task> getTasks(){
+    public Optional<Task> findById(Long id){
+        return taskRepository.findById(id);
+    }
+    public Boolean delete(Long id) {
+        Optional<Task> taskOptional = taskRepository.findById(id);
+        if (taskOptional.isPresent()) {
+            taskRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+    public String update(Task task, Long id) {
+        Optional<Task> taskOptional = taskRepository.findById(id);
+        if (taskOptional.isPresent()) {
+            Task updatedtTask = taskOptional.get();
 
-        return taskRepository.findAll();
-    } */
+            updatedtTask.setTitle(task.getTitle());
 
-	/* public Task save(Task task) {
-		return taskRepository.save(task);
-	} */
+            taskRepository.save(updatedtTask);
+            return "task updated !";
+
+        } else
+            return "Old company not found !";
+    }
     
 
 
