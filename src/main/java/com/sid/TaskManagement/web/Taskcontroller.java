@@ -1,4 +1,4 @@
-package com.sid.TaskManagement.controllers;
+package com.sid.TaskManagement.web;
 
 import org.springframework.web.bind.annotation.RestController;
 import com.sid.TaskManagement.entities.Task;
