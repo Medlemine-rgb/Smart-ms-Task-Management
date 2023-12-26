@@ -67,7 +67,7 @@ public class PublicController implements PublicControllerApi {
                 .phoneNumber(registerModel.getPhoneNumber()).nni(registerModel.getNni())
                 .password(registerModel.getPassword()).build();
         // If all checks pass, add the new user
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.User(userInfo));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createuser(userInfo));
     }
 
     // LOGIN
