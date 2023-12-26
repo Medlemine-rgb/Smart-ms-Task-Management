@@ -1,6 +1,5 @@
 package com.sid.TaskManagement.dto;
-import com.sid.TaskManagement.entities.User;
-
+import com.sid.TaskManagement.entities.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class AuthResponse {
     private final String token;
-    private final User user;
+    private final AppUser user;
 }

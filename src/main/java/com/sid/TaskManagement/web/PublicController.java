@@ -9,13 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.sid.TaskManagement.repository.UserRepository;
+import com.sid.TaskManagement.repository.AppUserRepository;
 import com.sid.TaskManagement.dto.AuthRequest;
 import com.sid.TaskManagement.dto.AuthResponse;
 import com.sid.TaskManagement.dto.RegisterModel;
-import com.sid.TaskManagement.entities.User;
+import com.sid.TaskManagement.entities.AppUser;
 import com.sid.TaskManagement.security.JwtService;
-import com.sid.TaskManagement.services.UserService;
+import com.sid.TaskManagement.services.UserServiceImpl;
 import com.sid.TaskManagement.utils.Messages;
 import com.sid.TaskManagement.web.ControllerApi.PublicControllerApi;
 import java.util.regex.Matcher;
@@ -25,11 +25,12 @@ import java.util.regex.Pattern;
 @CrossOrigin("*")
 public class PublicController implements PublicControllerApi {
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
-    private UserRepository appUserRepository;
+    private UserServiceImpl userServiceImpl;
+
+    @Autowired
+    private AppUserRepository appUserRepository;
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -37,6 +38,7 @@ public class PublicController implements PublicControllerApi {
 
     // REGISTER
     @Override
+
     public ResponseEntity<?> register(@RequestBody RegisterModel registerModel) {
         // Check if email, username, and password are not null or empty
         if (registerModel.getEmail() == null || registerModel.getEmail().isEmpty() ||
@@ -58,38 +60,33 @@ public class PublicController implements PublicControllerApi {
         }
 
         // Check if username or email already exists
-        Optional<User> existingUser = appUserRepository.findByUsername(registerModel.getUsername());
+        Optional<AppUser> existingUser = appUserRepository.findByUsername(registerModel.getUsername());
         if (existingUser.isPresent() || appUserRepository.findByEmail(registerModel.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Messages.CONFLICT);
         }
 
-        User userInfo = User.builder().username(registerModel.getUsername()).email(registerModel.getEmail())
+        AppUser userInfo = AppUser.builder().username(registerModel.getUsername()).email(registerModel.getEmail())
                 .phoneNumber(registerModel.getPhoneNumber()).nni(registerModel.getNni())
                 .password(registerModel.getPassword()).build();
         // If all checks pass, add the new user
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.User(userInfo));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userServiceImpl.addUser(userInfo));
     }
 
     // LOGIN
-    @Override
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
             String jwt = jwtService.generateToken(authRequest.getUsername());
-            User userInfo = appUserRepository.findByUsername(authRequest.getUsername()).get();
+            // AppUser userInfo = appUserRepository.findByUsername(authRequest.getUsername());
             try {
 
                     return ResponseEntity.status(HttpStatus.OK).body(new AuthResponse(jwt,
-                            User.builder().username(userInfo.getUsername()).address(userInfo.getAddress())
-                                    .createdAt(userInfo.getCreatedAt()).updatedAt(userInfo.getUpdatedAt())
-                                    .email(userInfo.getEmail())
-                                    .nni(userInfo.getNni())
-                                    .phoneNumber(userInfo.getPhoneNumber()).build()));
+                           null));
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.LOCKED).body(Messages.VERIFICATION_MAIL_REQUIRED);
+                return ResponseEntity.status(HttpStatus.LOCKED).build();
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -101,4 +98,10 @@ public class PublicController implements PublicControllerApi {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+
+    // @Override
+    // public ResponseEntity<?> login(AuthRequest authRequest) {
+    //     // TODO Auto-generated method stub
+    //     return null;
+    // }
 }
