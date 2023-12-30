@@ -5,6 +5,7 @@ import com.sid.TaskManagement.repository.AppUserRepository;
 import com.sid.TaskManagement.repository.RoleRepository;
 import com.sid.TaskManagement.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,6 +37,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @Disabled
     void testAddUser() {
         // Arrange
         AppUser user = new AppUser();

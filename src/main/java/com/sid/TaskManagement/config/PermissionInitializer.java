@@ -11,7 +11,7 @@ import com.sid.TaskManagement.entities.Permission;
 import com.sid.TaskManagement.repository.PermissionRepository;
 import com.sid.TaskManagement.repository.RoleRepository;
 import com.sid.TaskManagement.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder; 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 @Component
@@ -42,8 +42,8 @@ public class PermissionInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         String[] perm_list = { "list_role", "view_role", "create_role", "update_role", "delete_role",
                 "list_permission", "view_permission", "create_permission", "update_permission", "delete_permission",
-                "list_user", "update_user_password", "update_user_role", "delete_user", "list_account", "view_account","create_permission", 
-                "update_user_password", "get_profile", "update_profile","create_company","view_company"
+                "list_user", "update_user_password", "update_user_role", "delete_user", "list_account", "view_account","create_permission",
+                "update_user_password", "get_profile", "update_profile","create_task","view_company"
         };
 
         for (String perm : perm_list) {
